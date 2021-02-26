@@ -3,17 +3,23 @@ import os
 
 files_list = os.listdir('CSV_files')
 files_count = len(files_list)
-list = [[] for x in range(files_count)]
+lists = [[] for x in range(files_count)]
 
 i = 0
 for file in files_list:
-    with open(f'CSV_files/{file}', 'r') as csv_file:
-        csv_reader = csv.reader(x.replace('\0', '') for x in csv_file)
+    with open(f'CSV_files/{file}', 'r', newline='') as csv_file:
+        csv_reader = csv.reader((line.replace('\0', '') for line in csv_file), delimiter=' ')
         for row in csv_reader:
             try:
-                list[i].append(row[0])
+                lists[i].append(row)
             except IndexError:
                 pass
     i += 1
 
-print(list)
+with open('main.csv', 'w', newline='') as csv_file:
+    csv_writer = csv.writer(csv_file, delimiter=';')
+    for list in lists:
+        for ex in list:
+            csv_writer.writerow(list)
+
+print(lists)
